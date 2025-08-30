@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Carro } from '../../../models/carro';
 import { RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
+import { CarroService } from '../../../service/carro.service';
 
 @Component({
   selector: 'app-carros-list',
@@ -10,13 +11,11 @@ import Swal from 'sweetalert2';
   styleUrl: './carros-list.component.scss',
 })
 export class CarrosListComponent {
+  carroService = inject(CarroService);
   lista: Carro[] = [];
 
   constructor() {
-    this.lista.push(new Carro(1, 'Fiesta'));
-    this.lista.push(new Carro(2, 'Monza'));
-    this.lista.push(new Carro(3, 'Ka'));
-
+    this.findAll();
     let carroNovo = history.state.carroNovo;
     let carroEditado = history.state.carroEditado;
 
@@ -51,6 +50,18 @@ export class CarrosListComponent {
           confirmButtonText: 'Ok',
         });
       }
+    });
+  }
+  findAll() {
+    this.carroService.findAll().subscribe({
+      next: (lista) => {
+        // quando o back retornar 200
+        this.lista = lista;
+      },
+      error: (error) => {
+        // quando o back retornar error
+        alert('Ocorreu algum erro');
+      },
     });
   }
 }
