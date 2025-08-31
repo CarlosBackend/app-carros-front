@@ -40,14 +40,24 @@ export class CarrosListComponent {
       cancelButtonText: 'Não',
     }).then((result) => {
       if (result.isConfirmed) {
-        let indice = this.lista.findIndex((x) => {
-          return x.id == carro.id;
-        });
-        this.lista.splice(indice, 1);
-        Swal.fire({
-          title: 'Salvo com sucesso!',
-          icon: 'success',
-          confirmButtonText: 'Ok',
+        this.carroService.delete(carro.id).subscribe({
+          next: (mensagem) => {
+            // quando o back retornar 200
+            Swal.fire({
+              title: mensagem,
+              icon: 'success',
+              confirmButtonText: 'Ok',
+            });
+            this.findAll();
+          },
+          error: (error) => {
+            // quando o back retornar error
+            Swal.fire({
+              title: 'Ocorreu um erro',
+              icon: 'error',
+              confirmButtonText: 'Ok',
+            });
+          },
         });
       }
     });
@@ -60,7 +70,11 @@ export class CarrosListComponent {
       },
       error: (error) => {
         // quando o back retornar error
-        alert('Ocorreu algum erro');
+        Swal.fire({
+          title: 'Ocorreu um erro',
+          icon: 'error',
+          confirmButtonText: 'Ok',
+        });
       },
     });
   }

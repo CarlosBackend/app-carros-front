@@ -8,11 +8,17 @@ import { Observable } from 'rxjs';
 export class CarroService {
   http = inject(HttpClient);
 
-  API = 'http://localhost:8080/api/carro/findAll';
+  API = 'http://localhost:8080/api/carro';
 
   constructor() {}
 
   findAll(): Observable<Carro[]> {
-    return this.http.get<Carro[]>(this.API);
+    return this.http.get<Carro[]>(this.API + '/findAll');
+  }
+
+  delete(id: number): Observable<string> {
+    return this.http.delete<string>(this.API + '/delete/' + id, {
+      responseType: 'text' as 'json',
+    });
   }
 }
